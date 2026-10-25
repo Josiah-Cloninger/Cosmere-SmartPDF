@@ -23,31 +23,7 @@
         ["Survival", "Awareness", "Survival"]
     ];
 
-    // calculate defenses
-    var strengthField = doc.getField("Strength.Page 1");
-    var intellectField = doc.getField("Intellect.Page 1");
-    var willpowerField = doc.getField("Willpower.Page 1");
-    var presenceField = doc.getField("Presence.Page 1");
-    var awarenessField = doc.getField("Awareness.Page 1");
 
-    var cognitiveDefenseField = doc.getField("Cognitive Defense.Page 1");
-    var spiritualDefenseField = doc.getField("Spiritual Defense.Page 1");
-
-    if (intellectField && willpowerField && cognitiveDefenseField) {
-        var intellect = Number(intellectField.valueAsString);
-        var willpower = Number(willpowerField.valueAsString);
-
-        cognitiveDefenseField.value = 10 + intellect + willpower;
-    }
-
-    if (awarenessField && presenceField && spiritualDefenseField) {
-        var awareness = Number(awarenessField.valueAsString);
-        var presence = Number(presenceField.valueAsString);
-
-        spiritualDefenseField.value = 10 + awareness + presence;
-    }
-
-    // calculate skill bonuses
     for (var i = 0; i < skills.length; i++) {
         var outputName = skills[i][0];
         var statName = skills[i][1] + ".Page 1";

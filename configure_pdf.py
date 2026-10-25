@@ -12,7 +12,7 @@ import pymupdf
 PROJECT_DIR = Path(__file__).resolve().parent
 
 INPUT = PROJECT_DIR / "original.pdf"
-OUTPUT = PROJECT_DIR / "interactive.pdf"
+OUTPUT = PROJECT_DIR / "smart_character_sheet.pdf"
 
 # Matches suffixes such as ".Page 1" and ".Page 2".
 # For example, "Strength.Page 2" has base name "Strength".
@@ -95,7 +95,7 @@ RANK_EVENT = "Bl"
 # IMPORTANT:
 # Changing a rule here removes the old generated trigger on the next
 # build because this script always starts from original.pdf, not from
-# the previously generated interactive.pdf.
+# the previously generated smart_character_sheet.pdf.
 # Actions already present in original.pdf are otherwise retained unless
 # this script writes a replacement for the same field/event.
 # -------------------------------------------------------------------
@@ -111,6 +111,27 @@ DERIVATIVE_RULES = [
         "javascript": "calculate_spd_derivatives.js",
         "event": "V",
     },
+    {
+        "field_base": "Intellect",
+        "javascript": "calculate_int_derivatives.js",
+        "event": "V",
+    },
+    {
+        "field_base": "Willpower",
+        "javascript": "calculate_wil_derivatives.js",
+        "event": "V",
+    },
+        {
+        "field_base": "Awareness",
+        "javascript": "calculate_awa_derivatives.js",
+        "event": "V",
+    },
+    {
+        "field_base": "Presence",
+        "javascript": "calculate_pre_derivatives.js",
+        "event": "V",
+    },
+
 
     # TO ADD SPEED DERIVATIVES:
     #
@@ -328,7 +349,7 @@ def main():
         label = EVENT_NAMES.get(event_key, event_key)
         print(f"Verified {count} {label} actions.")
 
-    print("Saved interactive.pdf; original.pdf was not changed.")
+    print("Saved smart_character_sheet.pdf; original.pdf was not changed.")
 
 
 if __name__ == "__main__":

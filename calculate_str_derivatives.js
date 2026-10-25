@@ -2,7 +2,7 @@
     // During validation, event.value contains the new Strength value.
     var strength = Number(event.value);
 
-    // calculate physical defense
+// calculate physical defense
     var speedField = doc.getField("Speed.Page 1");
     var defenseField = doc.getField("Physical Defense");
     var speed = Number(speedField.valueAsString);
@@ -14,11 +14,10 @@
     defenseField.value = 10 + strength + speed;
 
 
-    // calculate health
-    var healthMaximumField = doc.getField("Health Maximum");
-    healthMaximumField.value = 10 + strength;
+// calculate health
+    doc.getField("Health Maximum").value = 10 + strength;
 
-    // calculate lifting capacity
+// calculate lifting capacity
     var liftingCapacityField = doc.getField("Lifting Capacity");
     if (strength === 0) {
         liftingCapacityField.value = "100 lb.";;
@@ -48,6 +47,58 @@
     } else if (strength >= 9) {
         unarmedDamage = "2d10";;
     }
+
     // calculate strength-based skill modifiers 
     //      (Athletics, Heavy Weaponry, Tension surge)
+    /*
+    var skills = [
+        ["Athletics", "Athletics"],
+        ["Heavy Weapons", "Heavy Weaponry"],
+    ];
+
+    for (var i = 0; i < skills.length; i++) {
+        var outputName = skills[i][0];
+        var statName = "Strength.Page 1";
+        var rankPrefix = skills[i][2];
+
+        var output = doc.getField(outputName);
+        var stat = doc.getField(statName);
+
+        if (output === null || stat === null) {
+            throw new Error("Missing skill or stat field: " + outputName);
+        }
+
+        var statText = stat.valueAsString;
+        var statValue = Number(statText);
+
+        // Leave the skill blank if its stat is empty or invalid.
+        if (
+            statText.replace(/\s/g, "") === "" ||
+            !isFinite(statValue)
+        ) {
+            output.value = "";
+            continue;
+        }
+
+        var ranks = 0;
+
+        for (var rank = 1; rank <= 5; rank++) {
+            var checkboxName = rankPrefix + " Rank " + rank;
+            var checkbox = doc.getField(checkboxName);
+
+            if (checkbox === null) {
+                throw new Error("Missing rank checkbox: " + checkboxName);
+            }
+
+            if (checkbox.isBoxChecked(0)) {
+                ranks++;
+            }
+        }
+
+        var total = statValue + ranks;
+
+        if (output.valueAsString !== String(total)) {
+            output.value = total;
+        }
+    }*/
 })(this);
