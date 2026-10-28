@@ -131,6 +131,11 @@ DERIVATIVE_RULES = [
         "javascript": "calculate_pre_derivatives.js",
         "event": "V",
     },
+    {
+        "field_base": "Level",
+        "javascript": "calculate_lvl_derivatives.js",
+        "event": "V",
+    },
 
 
     # TO ADD SPEED DERIVATIVES:
