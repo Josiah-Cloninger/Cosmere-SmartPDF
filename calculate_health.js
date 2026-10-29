@@ -1,9 +1,4 @@
-(function (doc) {
-    app.alert(
-        "Health script triggered by: " + event.target.name +
-        "\nEvent: " + event.name
-    );
-    
+(function (doc) {  
     var levelField = doc.getField("Level.Page 1");
     var strengthField = doc.getField("Strength.Page 1");
     var healthField = doc.getField("Health Maximum");
