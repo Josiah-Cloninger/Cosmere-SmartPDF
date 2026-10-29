@@ -1,6 +1,6 @@
 import pymupdf
 
-with pymupdf.open("original.pdf") as doc:
+with pymupdf.open("smart_character_sheet.pdf") as doc:
     for page_number, page in enumerate(doc, start=1):
         for field in page.widgets():
             print(

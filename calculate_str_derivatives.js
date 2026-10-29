@@ -30,6 +30,10 @@
         healthField.value = (1 * (level - 20)) + (4 * strength) + 75;
     }
     
+    var hardyTraitField = doc.getField("Has Hardy Trait");
+    if (hardyTraitField.value == "on") {
+        healthField.value += level;
+    }
 
 // calculate lifting capacity
     var liftingCapacityField = doc.getField("Lifting Capacity");
