@@ -4,7 +4,11 @@ import re
 
 import pymupdf
 
-from add_options_page import add_options_page
+from add_options_page import (
+    ENHANCED_FIELDS,
+    TRAIT_FIELDS,
+    add_options_page,
+)
 
 
 # -------------------------------------------------------------------
@@ -94,50 +98,32 @@ RANK_EVENT = "Bl"
 #   Change the rule's event key, then rebuild.
 #   Also adapt the JavaScript to that event's value semantics.
 #
-# Rules may overlap. For example, Strength triggers both its own
-# derivatives and health. Scripts for the same field/event are joined
+# Rules may overlap. Scripts for the same field/event are joined
 # in the order their rules appear below.
+#
+# Trait checkboxes run on Mouse Up so results update immediately, and
+# on Blur so keyboard toggles are picked up too.
 # -------------------------------------------------------------------
 
 DERIVATIVE_RULES = [
     {
-        "field_base": ["Strength"],
-        "javascript": "calculate_str_derivatives.js",
+        "field_base": sorted(STATS) + ["Level"] + ENHANCED_FIELDS,
+        "javascript": "calculate_stats.js",
         "event": "V",
     },
     {
-        "field_base": ["Speed"],
-        "javascript": "calculate_spd_derivatives.js",
-        "event": "V",
+        "field_base": TRAIT_FIELDS,
+        "javascript": "calculate_stats.js",
+        "event": "U",
     },
     {
-        "field_base": ["Intellect"],
-        "javascript": "calculate_int_derivatives.js",
-        "event": "V",
+        "field_base": TRAIT_FIELDS,
+        "javascript": "calculate_stats.js",
+        "event": "Bl",
     },
     {
-        "field_base": ["Willpower"],
-        "javascript": "calculate_wil_derivatives.js",
-        "event": "V",
-    },
-    {
-        "field_base": ["Awareness"],
-        "javascript": "calculate_awa_derivatives.js",
-        "event": "V",
-    },
-    {
-        "field_base": ["Presence"],
-        "javascript": "calculate_pre_derivatives.js",
-        "event": "V",
-    },
-    {
-        "field_base": ["Level", "Strength"],
-        "javascript": "calculate_health.js",
-        "event": "V",
-    },
-    {
-        "field_base": ["Has Hardy Trait"],
-        "javascript": "calculate_health.js",
+        "field_base": ENHANCED_FIELDS,
+        "javascript": "calculate_skills.js",
         "event": "Bl",
     },
 ]

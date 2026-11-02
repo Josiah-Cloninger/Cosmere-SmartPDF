@@ -7,8 +7,10 @@ skill calculations, and derived statistics to a PDF character sheet.
 
 - `configure_pdf.py`: Builds the interactive PDF and attaches field events.
 - `sync_fields.js`: Synchronizes repeated fields.
-- `calculate_skills.js`: Calculates skill totals.
-- `calculate_strength_derivatives.js`: Calculates Strength-derived values.
+- `add_options_page.py`: Draws page 4, with Enhanced attributes and talents.
+- `calculate_skills.js`: Calculates skill totals, including Enhanced bonuses.
+- `calculate_stats.js`: Calculates defenses, resource maximums, and
+  attribute-based values, applying talents and Enhanced bonuses.
 - `original.pdf`: Input PDF.
 - `interactive.pdf`: Generated output; not tracked in Git.
 

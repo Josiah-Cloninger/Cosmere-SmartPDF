@@ -63,7 +63,21 @@
             }
         }
 
-        var total = statValue + ranks;
+        // Enhanced raises the attribute for skill modifiers.
+        var enhancedName = "Enhanced " + skills[i][1];
+        var enhanced = doc.getField(enhancedName);
+
+        if (enhanced === null) {
+            throw new Error("Missing Enhanced field: " + enhancedName);
+        }
+
+        var enhancedValue = Number(enhanced.valueAsString);
+
+        if (!isFinite(enhancedValue)) {
+            enhancedValue = 0;
+        }
+
+        var total = statValue + enhancedValue + ranks;
 
         if (output.valueAsString !== String(total)) {
             output.value = total;
