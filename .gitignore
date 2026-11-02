@@ -7,9 +7,6 @@ env/
 __pycache__/
 *.py[cod]
 
-# Generated PDF
-interactive.pdf
-
 # Local secrets and configuration
 .env
 .env.*
@@ -22,3 +19,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# rulebook
+stormlight_handbook.pdf
