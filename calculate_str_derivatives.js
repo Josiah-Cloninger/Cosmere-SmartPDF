@@ -14,27 +14,6 @@
     defenseField.value = 10 + strength + speed;
 
 
-// calculate health
-    var level = Number(doc.getField("Level.Page 1").valueAsString);
-    var healthField = doc.getField("Health Maximum");
-
-    if (1 <= level && level <= 5) {
-        healthField.value = (5 * level) + 5 + strength;
-    } else if (6 <= level && level <= 10) {
-        healthField.value = (4 * (level - 5)) + (2 * strength) + 30;
-    } else if (11 <= level && level <= 15) {
-        healthField.value = (3 * (level - 10)) + (3 * strength) + 50;
-    } else if (16 <= level && level <= 20) {
-        healthField.value = (2 * (level - 15)) + (4 * strength) + 65;
-    } else if (21 <= level) {
-        healthField.value = (1 * (level - 20)) + (4 * strength) + 75;
-    }
-    
-    var hardyTraitField = doc.getField("Has Hardy Trait");
-    if (hardyTraitField.value == "on") {
-        healthField.value += level;
-    }
-
 // calculate lifting capacity
     var liftingCapacityField = doc.getField("Lifting Capacity");
     if (strength === 0) {
@@ -64,6 +43,21 @@
         unarmedDamage = "2d6";;
     } else if (strength >= 9) {
         unarmedDamage = "2d10";;
+    }
+
+    // Weapons is a free-form box, so only replace the "Unarmed:" line.
+    if (unarmedDamage) {
+        var weaponText = weaponsField.valueAsString;
+        var weaponLines = weaponText === "" ? [] : weaponText.split(/\r\n|\r|\n/);
+        var keptLines = ["Unarmed: " + unarmedDamage];
+
+        for (var w = 0; w < weaponLines.length; w++) {
+            if (!/^Unarmed:/.test(weaponLines[w])) {
+                keptLines.push(weaponLines[w]);
+            }
+        }
+
+        weaponsField.value = keptLines.join("\r");
     }
 
     // calculate strength-based skill modifiers 

@@ -25,8 +25,6 @@
 
 
 // calculate investiture
-    if (presence > awareness) {
-        doc.getField("Investiture Maximum 4").value = 2 + presence;
-    } 
-    
+    doc.getField("Investiture Maximum 4").value = 2 + Math.max(presence, awareness);
+
 })(this);
