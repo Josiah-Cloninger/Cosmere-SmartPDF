@@ -73,10 +73,28 @@
     }
 
 // calculate defenses (never Enhanced)
+    // Each defense appears on pages 1 and 2 as "<name>.Page N".
+    // Write every copy: Chromium-based viewers such as Brave ignore
+    // values set on the shared parent name.
     function setDefense(name, first, second, bonus) {
-        getField(name).value = first === null && second === null
+        var value = first === null && second === null
             ? ""
             : 10 + first + second + bonus;
+        var found = false;
+
+        for (var f = 0; f < doc.numFields; f++) {
+            var fieldName = doc.getNthFieldName(f);
+
+            if (fieldName.replace(/\.Page \d+$/, "") === name &&
+                fieldName !== name) {
+                getField(fieldName).value = value;
+                found = true;
+            }
+        }
+
+        if (!found) {
+            throw new Error("Missing field: " + name + ".Page 1");
+        }
     }
 
     var collected = hasTrait("Collected") ? 2 : 0;
