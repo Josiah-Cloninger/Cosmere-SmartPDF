@@ -139,6 +139,66 @@ EVENT_NAMES = {
 
 
 # -------------------------------------------------------------------
+# Text sizes
+# -------------------------------------------------------------------
+#
+# Smaller text for boxes that hold a lot of writing. Keys are exact
+# PDF field names; values are font sizes in points. The original
+# sheet uses 9 pt for these boxes and 8 pt for the custom skill
+# attribute boxes. Page 4's notes columns start at 10 pt.
+# -------------------------------------------------------------------
+
+TEXT_BOX_FONT_SIZE = 7.5
+CUSTOM_SKILL_TRAIT_FONT_SIZE = 6.5
+
+FONT_SIZE_OVERRIDES = {
+    **{
+        name: CUSTOM_SKILL_TRAIT_FONT_SIZE
+        for name in [
+            "Physical Custom Skill Trait",
+            "Cognitive Custom Skill Trait",
+            "Spiritual Custom Skill Trait",
+        ]
+    },
+    **{
+        name: TEXT_BOX_FONT_SIZE
+        for name in [
+            # Page 1
+            "Talents 1",
+            "Talents 2",
+            "Weapons",
+            "Conditions",
+            "Expertises 1",
+            "Expertises 2",
+            # Page 2
+            "Character Appearance",
+            "Armor & Equipment",
+            "Talents 3",  # Other Talents & Abilities
+            "Notes",
+            "Connections",
+            *[f"Goal {number}" for number in range(1, 10)],
+            # Page 3
+            "Surge Effect",
+            "Surge Effect 2",
+            "Surge Talents",
+            "Surge Talents 2",
+            "Surge 2 Effect",
+            "Surge 2 Effect 2",
+            "Surge 2 Talents",
+            "Surge 2 Talents 2",
+            # Page 4
+            "Other Traits and Notes 1",
+            "Other Traits and Notes 2",
+            "Other Traits and Notes 3",
+            "Other Traits and Notes 4",
+        ]
+    },
+}
+
+FONT_SIZE = re.compile(r"(\d+(?:\.\d+)?) Tf")
+
+
+# -------------------------------------------------------------------
 # File and configuration helpers
 # -------------------------------------------------------------------
 
@@ -245,6 +305,34 @@ def add_script(event_scripts, event_key, javascript):
     event_scripts[event_key].append(javascript)
 
 
+def set_font_size(doc, widget_xref, name, size):
+    """Change the font size in a field's default appearance (/DA).
+
+    Viewers use /DA to draw text the user types. The widget's own /DA
+    wins; otherwise it is inherited from the parent field.
+    """
+    for xref in (widget_xref, doc.xref_get_key(widget_xref, "Parent")):
+        if isinstance(xref, tuple):
+            if xref[0] != "xref":
+                break
+            xref = int(xref[1].split()[0])
+
+        da_type, da = doc.xref_get_key(xref, "DA")
+
+        if da_type == "string":
+            if not FONT_SIZE.search(da):
+                raise RuntimeError(f"No font size in /DA for {name}: {da}")
+
+            doc.xref_set_key(
+                xref,
+                "DA",
+                pymupdf.get_pdf_str(FONT_SIZE.sub(f"{size:g} Tf", da)),
+            )
+            return
+
+    raise RuntimeError(f"No /DA found for {name}")
+
+
 # -------------------------------------------------------------------
 # PDF configuration
 # -------------------------------------------------------------------
@@ -317,6 +405,21 @@ def main():
                     + "\n\nAvailable text/checkbox base names:\n"
                     + "\n".join(sorted(available_field_bases))
                 )
+
+        text_fields = {
+            name: xref
+            for xref, name, _, field_type in fields
+            if field_type == pymupdf.PDF_WIDGET_TYPE_TEXT
+        }
+        missing = set(FONT_SIZE_OVERRIDES) - set(text_fields)
+
+        if missing:
+            raise RuntimeError(
+                "Font size fields missing:\n" + "\n".join(sorted(missing))
+            )
+
+        for name, size in FONT_SIZE_OVERRIDES.items():
+            set_font_size(doc, text_fields[name], name, size)
 
         for xref, name, base_name, field_type in fields:
             event_scripts = defaultdict(list)
