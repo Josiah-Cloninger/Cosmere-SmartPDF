@@ -43,7 +43,12 @@ TRAITS = [
 
 TRAIT_FIELDS = [field_name for _, field_name, _ in TRAITS]
 
-NOTES_FIELD = "Other Traits and Notes"
+NOTES_COLUMNS = 4
+
+NOTES_FIELDS = [
+    f"Other Traits and Notes {column}"
+    for column in range(1, NOTES_COLUMNS + 1)
+]
 
 ENHANCED_APPLIES = (
     "Skill modifiers, movement, lifting capacity, recovery die, "
@@ -351,14 +356,35 @@ def draw_notes_section(page):
         HEADING_FONT,
         13,
     )
-    add_text_widget(
-        page,
-        NOTES_FIELD,
-        "Other traits and notes",
-        pymupdf.Rect(notes.x0 + 10, notes.y0 + 28, notes.x1 - 10, notes.y1 - 8),
-        NOTES_INPUT_FONT_SIZE,
-        flags=pymupdf.PDF_TX_FIELD_IS_MULTILINE,
-    )
+
+    pad = 10
+    top = notes.y0 + 28
+    bottom = notes.y1 - 8
+    column_width = (
+        notes.width - pad * 2 - COLUMN_GAP * (NOTES_COLUMNS - 1)
+    ) / NOTES_COLUMNS
+
+    for index, field_name in enumerate(NOTES_FIELDS):
+        x0 = notes.x0 + pad + index * (column_width + COLUMN_GAP)
+
+        # Divider centered in the gap before each later column.
+        if index > 0:
+            divider_x = x0 - COLUMN_GAP / 2
+            page.draw_line(
+                (divider_x, top),
+                (divider_x, bottom),
+                color=BLACK,
+                width=0.5,
+            )
+
+        add_text_widget(
+            page,
+            field_name,
+            f"Other traits and notes, column {index + 1}",
+            pymupdf.Rect(x0, top, x0 + column_width, bottom),
+            NOTES_INPUT_FONT_SIZE,
+            flags=pymupdf.PDF_TX_FIELD_IS_MULTILINE,
+        )
 
 
 # -------------------------------------------------------------------
@@ -379,7 +405,7 @@ def add_options_page(doc):
         for widget in existing_page.widgets()
     }
     duplicates = existing_names.intersection(
-        ENHANCED_FIELDS + TRAIT_FIELDS + [NOTES_FIELD]
+        ENHANCED_FIELDS + TRAIT_FIELDS + NOTES_FIELDS
     )
 
     if duplicates:
